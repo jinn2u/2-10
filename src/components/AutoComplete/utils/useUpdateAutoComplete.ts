@@ -8,13 +8,12 @@ export const useUpdateAutoComplete = (
   setShowDropdown: Dispatch<SetStateAction<boolean>>,
   setAutoCompleteInput: Dispatch<SetStateAction<string>>,
   setDropdownList: Dispatch<SetStateAction<TypeDropdownList>>,
-  handleSubmit: () => void,
+  handleSubmit: (word: string) => void,
 ) => {
   setShowDropdown(false);
   setAutoCompleteInput(word);
-
   const newDropdownList = createDropdownList(wordList, word, 7);
 
   setDropdownList(newDropdownList);
-  handleSubmit();
+  handleSubmit(word);
 };

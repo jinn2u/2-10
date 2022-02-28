@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Wrapper = styled.label`
+export const Wrapper = styled.div`
   position: relative;
   width: fit-content;
 `;
