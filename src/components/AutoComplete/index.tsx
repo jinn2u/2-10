@@ -1,5 +1,5 @@
 import { ChangeEvent, useCallback, useState } from 'react';
-import { Input } from './style';
+import { Input, Li, Ul, Wrapper } from './style';
 import { Props, TypeDropdownList } from './types';
 import { createDropdownListAndSetDropDownOpen } from './utils/createDropdownListAndSetDropDownOpen';
 
@@ -27,6 +27,17 @@ const AutoComplete = ({
     [wordList],
   );
 
-  return <Input width={width} onChange={handleChange} value={autoCompleteInput} />;
+  return (
+    <Wrapper>
+      <Input width={width} onChange={handleChange} value={autoCompleteInput} />
+      {showDropdown && (
+        <Ul width={width}>
+          {dropdownList.map(({ id, name }) => (
+            <Li key={id}>{name}</Li>
+          ))}
+        </Ul>
+      )}
+    </Wrapper>
+  );
 };
 export default AutoComplete;
