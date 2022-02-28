@@ -27,9 +27,10 @@ export const Ul = styled.ul<{ width: number }>`
   box-sizing: border-box;
 `;
 
-export const Li = styled.li`
+export const Li = styled.li<{ isSelected: boolean }>`
   padding: 0px 0px 0px 5px;
   margin: 0px;
+  background-color: ${({ isSelected }) => (isSelected ? 'lightgray' : 'white')};
   &:hover {
     background-color: lightgray;
     cursor: pointer;

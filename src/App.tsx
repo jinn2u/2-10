@@ -10,6 +10,7 @@ function App() {
       autoCompleteInput={autoCompleteInput}
       setAutoCompleteInput={setAutoCompleteInput}
       wordList={wordList}
+      handleSubmit={() => console.log(autoCompleteInput)}
     />
   );
 }

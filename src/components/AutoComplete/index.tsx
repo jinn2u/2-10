@@ -1,13 +1,18 @@
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useCallback, useState } from 'react';
 import { Input, Li, Ul, Wrapper } from './style';
 import { Props, TypeDropdownList } from './types';
+import { changeDropdownListColor } from './utils/changeDropdownListColor';
 import { createDropdownListAndSetDropDownOpen } from './utils/createDropdownListAndSetDropDownOpen';
+import { findName } from './utils/findName';
+import { findNextWordIdx } from './utils/findNextWordIdx';
+import { useUpdateAutoComplete } from './utils/useUpdateAutoComplete';
 
 const AutoComplete = ({
   width = 300,
   setAutoCompleteInput,
   autoCompleteInput,
   wordList,
+  handleSubmit,
   ...props
 }: Props) => {
   const [dropdownList, setDropdownList] = useState<TypeDropdownList>([]);
@@ -26,14 +31,45 @@ const AutoComplete = ({
     },
     [wordList],
   );
+  const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const inputValue = (e.target as HTMLInputElement).value;
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'Enter') return;
+    if (!inputValue) return;
+    if (!dropdownList.length && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) return;
+    if (inputValue && !dropdownList.length) return;
+    const [idx, name] = findName(dropdownList, inputValue);
+
+    if (e.key === 'Enter') {
+      useUpdateAutoComplete(
+        name,
+        wordList,
+        setShowDropdown,
+        setAutoCompleteInput,
+        setDropdownList,
+        handleSubmit,
+      );
+      return;
+    }
+    const nextWordIdx = findNextWordIdx(e.key, idx, dropdownList);
+    setAutoCompleteInput(dropdownList[nextWordIdx].name);
+    setDropdownList((prevDropdownList) => changeDropdownListColor(prevDropdownList, nextWordIdx));
+  };
 
   return (
     <Wrapper>
-      <Input width={width} onChange={handleChange} value={autoCompleteInput} />
+      <Input
+        width={width}
+        onChange={handleChange}
+        onKeyUp={handleKeyUp}
+        value={autoCompleteInput}
+      />
       {showDropdown && (
         <Ul width={width}>
-          {dropdownList.map(({ id, name }) => (
-            <Li key={id}>{name}</Li>
+          {dropdownList.map(({ id, name, isSelected }) => (
+            <Li key={id} isSelected={isSelected}>
+              {name}
+            </Li>
           ))}
         </Ul>
       )}
