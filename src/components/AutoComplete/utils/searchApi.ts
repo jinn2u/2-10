@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const api = async (name: string) => {
+export const searchApi = async (name: string) => {
   try {
     const { data } = await axios.get(
       `${process.env.REACT_APP_BASE_URL}/search-conditions/?name=${name}`,
