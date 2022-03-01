@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ width: number | string }>`
   position: relative;
-  width: fit-content;
+  width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width)};
 `;
 
 export const InputWrapper = styled.div`
@@ -16,9 +16,12 @@ export const InputWrapper = styled.div`
   padding: 20px 0px 20px 24px;
   box-sizing: border-box;
   flex: 1;
+  @media (max-width: 1040px) {
+    height: 35px;
+  }
 `;
 
-export const Input = styled.input<{ width: number }>`
+export const Input = styled.input`
   border: 0;
   background-color: transparent;
   padding: 5px 0px 5px 5px;
@@ -28,7 +31,7 @@ export const Input = styled.input<{ width: number }>`
   border-radius: 10px;
   font-size: 1.125rem;
   font-weight: 400;
-  width
+  flex-grow: 1;
 `;
 
 export const Btn = styled.button`
@@ -47,26 +50,30 @@ export const Btn = styled.button`
   padding-bottom: 18px;
   cursor: pointer;
   height: 60px;
+  @media (max-width: 1040px) {
+    display: none;
+  }
 `;
 
-export const Ul = styled.ul<{ width: number }>`
-  width: ${({ width }) => `${width}px`};
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border: 1px solid lightgray;
-  top: 25px;
-  padding: 0px;
-  margin: 0px;
+export const Ul = styled.ul`
+  width: 100%;
+  border-radius: 22px;
+  background-color: #ffffff;
+  top: 70px;
+  padding: 10px;
   list-style: none;
-  position: absolute;
   z-index: 100;
   box-sizing: border-box;
+  position: absolute;
 `;
 
 export const Li = styled.li<{ isSelected: boolean }>`
-  padding: 0px 0px 0px 5px;
-  margin: 0px;
-  background-color: ${({ isSelected }) => (isSelected ? 'lightgray' : 'white')};
+  background-color: ${({ isSelected }) => (isSelected ? 'lightgray' : 'transparent')};
+  font-size: 1.125rem;
+  width: 100%;
+  padding: 10px 0px;
+  margin: 0;
+  box-sizing: border-box;
   &:hover {
     background-color: lightgray;
     cursor: pointer;
@@ -75,4 +82,9 @@ export const Li = styled.li<{ isSelected: boolean }>`
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
   }
+`;
+export const Text = styled.h4`
+  font-size: 0.8rem;
+  color: lightgray;
+  margin-bottom: 10px;
 `;

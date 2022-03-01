@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 
 export interface Props {
-  width?: number;
+  width?: number | string;
   setAutoCompleteInput: Dispatch<SetStateAction<string>>;
   autoCompleteInput: string;
   wordList: TypeWordList;

@@ -2,7 +2,7 @@ import { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
 import { search } from '../../redux/search';
-import { Btn, Input, InputWrapper, Li, Ul, Wrapper } from './style';
+import { Btn, Input, InputWrapper, Li, Text, Ul, Wrapper } from './style';
 import { Props, TypeDropdownList, TypeWordList } from './types';
 import { searchApi } from './utils/searchApi';
 import { changeDropdownListColor } from './utils/changeDropdownListColor';
@@ -103,11 +103,10 @@ const AutoComplete = ({
     setShowDropdown(true);
   };
   return (
-    <Wrapper>
+    <Wrapper width={width}>
       <InputWrapper>
         <Magnifier />
         <Input
-          width={width}
           onChange={handleChange}
           onKeyUp={handleKeyUp}
           onClick={handleInputClick}
@@ -117,10 +116,11 @@ const AutoComplete = ({
       </InputWrapper>
 
       {showDropdown && (
-        <Ul width={width}>
+        <Ul>
+          <Text>추천 검색어</Text>
           {dropdownList.map(({ id, name, isSelected }) => (
             <Li key={id} isSelected={isSelected} onClick={() => handleLiClick(name)}>
-              {name}
+              <Magnifier /> {name}
             </Li>
           ))}
         </Ul>
