@@ -1,6 +1,7 @@
 import { ChangeEvent, KeyboardEvent, MouseEvent, useCallback, useState } from 'react';
 import { Input, Li, Ul, Wrapper } from './style';
 import { Props, TypeDropdownList } from './types';
+import { api } from './utils/api';
 import { changeDropdownListColor } from './utils/changeDropdownListColor';
 import { createDropdownListAndSetDropDownOpen } from './utils/createDropdownListAndSetDropDownOpen';
 import { findName } from './utils/findName';
@@ -10,6 +11,7 @@ import { useUpdateAutoComplete } from './utils/useUpdateAutoComplete';
 const AutoComplete = ({
   width = 300,
   setAutoCompleteInput,
+  setWordList,
   autoCompleteInput,
   wordList,
   handleSubmit,
@@ -18,7 +20,7 @@ const AutoComplete = ({
   const [dropdownList, setDropdownList] = useState<TypeDropdownList>([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setAutoCompleteInput(value);
 
@@ -26,7 +28,9 @@ const AutoComplete = ({
       setShowDropdown(false);
       return setDropdownList([]);
     }
-    createDropdownListAndSetDropDownOpen(wordList, value, setDropdownList, setShowDropdown);
+    const newWordList = await api(value);
+    setWordList(newWordList);
+    createDropdownListAndSetDropDownOpen(newWordList, value, setDropdownList, setShowDropdown);
   };
 
   const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {

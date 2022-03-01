@@ -5,6 +5,7 @@ export interface Props {
   setAutoCompleteInput: Dispatch<SetStateAction<string>>;
   autoCompleteInput: string;
   wordList: TypeWordList;
+  setWordList: Dispatch<SetStateAction<TypeWordList>>;
   handleSubmit: (word: string) => void;
 }
 export type TypeWordList = { id: number; name: string }[];

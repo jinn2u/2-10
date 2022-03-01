@@ -7,7 +7,7 @@ function App() {
   const [wordList, setWordList] = useState(MOCK_DATA);
 
   const handleSubmit = (word: string) => {
-    console.log(word);
+    console.log(word, 'submit');
   };
 
   return (
@@ -15,6 +15,7 @@ function App() {
       autoCompleteInput={autoCompleteInput}
       setAutoCompleteInput={setAutoCompleteInput}
       wordList={wordList}
+      setWordList={setWordList}
       handleSubmit={handleSubmit}
     />
   );
