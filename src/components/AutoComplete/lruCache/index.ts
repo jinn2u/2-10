@@ -49,7 +49,6 @@ export class LRUCache<T> {
     this.head = newNode;
     this.size++;
 
-    //add to cache
     this.cache[key] = newNode;
     return;
   }
@@ -58,13 +57,13 @@ export class LRUCache<T> {
       return null;
     }
 
-    const foundNode = this.cache[key];
-    if (foundNode === this.head) return foundNode;
+    const node = this.cache[key];
+    if (node === this.head) return node;
 
-    const previous = foundNode.prev;
-    const next = foundNode.next;
+    const previous = node.prev;
+    const next = node.next;
 
-    if (foundNode === this.tail) {
+    if (node === this.tail) {
       previous!.next = null;
       this.tail = previous;
     } else {
@@ -72,11 +71,11 @@ export class LRUCache<T> {
       next!.prev = previous;
     }
 
-    this.head!.prev = foundNode;
-    foundNode.next = this.head;
-    foundNode.prev = null;
-    this.head = foundNode;
+    this.head!.prev = node;
+    node.next = this.head;
+    node.prev = null;
+    this.head = node;
 
-    return foundNode;
+    return node;
   }
 }
