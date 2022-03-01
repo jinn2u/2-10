@@ -1,4 +1,4 @@
-import { ChangeEvent, KeyboardEvent, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, MutableRefObject, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
 import { search } from '../../redux/search';
@@ -11,6 +11,7 @@ import { findName } from './utils/findName';
 import { findNextWordIdx } from './utils/findNextWordIdx';
 import { useUpdateAutoComplete } from './utils/useUpdateAutoComplete';
 import Magnifier from '../Magnifier';
+import { useClickAway } from '../../hooks/useClickAway';
 
 const AutoComplete = ({
   width = 300,
@@ -23,6 +24,10 @@ const AutoComplete = ({
 }: Props) => {
   const [dropdownList, setDropdownList] = useState<TypeDropdownList>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const ulRef = useClickAway(() => {
+    showDropdown && setShowDropdown(false);
+  }, [showDropdown]);
+
   const dispatch = useDispatch();
   const { data: searchStore } = useSelector((store: RootState) => store.search);
 
@@ -116,8 +121,8 @@ const AutoComplete = ({
       </InputWrapper>
 
       {showDropdown && (
-        <Ul>
-          <Text>추천 검색어</Text>
+        <Ul ref={ulRef as MutableRefObject<HTMLUListElement>}>
+          <Text>{dropdownList.length ? '추천 검색어' : '검색어 없음'}</Text>
           {dropdownList.map(({ id, name, isSelected }) => (
             <Li key={id} isSelected={isSelected} onClick={() => handleLiClick(name)}>
               <Magnifier /> {name}
