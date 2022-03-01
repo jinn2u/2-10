@@ -2,7 +2,7 @@ import { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
 import { search } from '../../redux/search';
-import { Input, Li, Ul, Wrapper } from './style';
+import { Btn, Input, InputWrapper, Li, Ul, Wrapper } from './style';
 import { Props, TypeDropdownList, TypeWordList } from './types';
 import { searchApi } from './utils/searchApi';
 import { changeDropdownListColor } from './utils/changeDropdownListColor';
@@ -10,6 +10,7 @@ import { createDropdownListAndSetDropDownOpen } from './utils/createDropdownList
 import { findName } from './utils/findName';
 import { findNextWordIdx } from './utils/findNextWordIdx';
 import { useUpdateAutoComplete } from './utils/useUpdateAutoComplete';
+import Magnifier from '../Magnifier';
 
 const AutoComplete = ({
   width = 300,
@@ -52,6 +53,7 @@ const AutoComplete = ({
       dispatch(search.actions.remove(value));
     }
     const newWordList = await searchApi(value);
+
     setWordList(newWordList);
     createDropdownListAndSetDropDownOpen(newWordList, value, setDropdownList, setShowDropdown);
     dispatch(search.actions.set(value, newWordList));
@@ -60,6 +62,7 @@ const AutoComplete = ({
   const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     const inputValue = (e.target as HTMLInputElement).value;
+
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'Enter') return;
     if (!inputValue) return;
     if (!dropdownList.length && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) return;
@@ -101,13 +104,18 @@ const AutoComplete = ({
   };
   return (
     <Wrapper>
-      <Input
-        width={width}
-        onChange={handleChange}
-        onKeyUp={handleKeyUp}
-        onClick={handleInputClick}
-        value={autoCompleteInput}
-      />
+      <InputWrapper>
+        <Magnifier />
+        <Input
+          width={width}
+          onChange={handleChange}
+          onKeyUp={handleKeyUp}
+          onClick={handleInputClick}
+          value={autoCompleteInput}
+        />
+        <Btn>검색</Btn>
+      </InputWrapper>
+
       {showDropdown && (
         <Ul width={width}>
           {dropdownList.map(({ id, name, isSelected }) => (
