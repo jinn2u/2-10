@@ -1,7 +1,10 @@
-import { ChangeEvent, KeyboardEvent, MouseEvent, useCallback, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux';
+import { search } from '../../redux/search';
 import { Input, Li, Ul, Wrapper } from './style';
-import { Props, TypeDropdownList } from './types';
-import { api } from './utils/api';
+import { Props, TypeDropdownList, TypeWordList } from './types';
+import { searchApi } from './utils/searchApi';
 import { changeDropdownListColor } from './utils/changeDropdownListColor';
 import { createDropdownListAndSetDropDownOpen } from './utils/createDropdownListAndSetDropDownOpen';
 import { findName } from './utils/findName';
@@ -19,6 +22,8 @@ const AutoComplete = ({
 }: Props) => {
   const [dropdownList, setDropdownList] = useState<TypeDropdownList>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const dispatch = useDispatch();
+  const { data: searchStore } = useSelector((store: RootState) => store.search);
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -28,9 +33,28 @@ const AutoComplete = ({
       setShowDropdown(false);
       return setDropdownList([]);
     }
-    const newWordList = await api(value);
+
+    const storedData = searchStore.find(({ name }) => name === value);
+    if (storedData) {
+      const { wordList: storedWordList, minute } = storedData;
+      const nowMin = new Date().getMinutes();
+
+      if (Math.abs(nowMin - (minute as number)) <= 5) {
+        setWordList(storedWordList as TypeWordList);
+        createDropdownListAndSetDropDownOpen(
+          storedWordList as TypeWordList,
+          value,
+          setDropdownList,
+          setShowDropdown,
+        );
+        return;
+      }
+      dispatch(search.actions.remove(value));
+    }
+    const newWordList = await searchApi(value);
     setWordList(newWordList);
     createDropdownListAndSetDropDownOpen(newWordList, value, setDropdownList, setShowDropdown);
+    dispatch(search.actions.set(value, newWordList));
   };
 
   const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
