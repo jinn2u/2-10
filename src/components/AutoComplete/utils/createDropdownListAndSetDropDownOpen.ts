@@ -10,5 +10,5 @@ export const createDropdownListAndSetDropDownOpen = (
 ) => {
   const dropdownList = createDropdownList(wordList, inputValue, 7);
   setDropdownList(dropdownList);
-  dropdownList.length ? setShowDropdown(true) : setShowDropdown(false);
+  setShowDropdown(true);
 };
