@@ -22,7 +22,7 @@ export const search = createSlice({
     },
     remove: {
       reducer: (state: TypeSearch, action: PayloadAction<{ name: string }>) => {
-        state.data = state.data.filter(({ name }) => name === action.payload.name);
+        state.data = state.data.filter(({ name }) => name !== action.payload.name);
       },
       prepare: (name: string) => ({ payload: { name } }),
     },
