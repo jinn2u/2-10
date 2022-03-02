@@ -14,7 +14,7 @@ function App() {
     <Wrapper>
       <Container>
         <TextWrapper>
-          <H1>국내 모둔 임상시험 검색하고</H1>
+          <H1>국내 모든 임상시험 검색하고</H1>
           <br />
           <H1>온라인으로 참여하기</H1>
         </TextWrapper>
