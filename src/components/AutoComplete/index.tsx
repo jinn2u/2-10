@@ -1,17 +1,18 @@
-import { ChangeEvent, KeyboardEvent, MutableRefObject, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, MutableRefObject, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux';
-import { search } from '../../redux/search';
+
 import { Btn, Input, InputWrapper, Li, Text, Ul, Wrapper } from './style';
-import { Props, TypeDropdownList, TypeWordList } from './types';
-import { searchApi } from './utils/searchApi';
-import { changeDropdownListColor } from './utils/changeDropdownListColor';
-import { createDropdownListAndSetDropDownOpen } from './utils/createDropdownListAndSetDropDownOpen';
-import { findName } from './utils/findName';
-import { findNextWordIdx } from './utils/findNextWordIdx';
-import { useUpdateAutoComplete } from './utils/useUpdateAutoComplete';
+import { Props, TypeDropdownList } from './types';
+import { RootState } from '../../redux';
 import Magnifier from '../Magnifier';
 import { useClickAway } from '../../hooks/useClickAway';
+import {
+  changeDropdownListColor,
+  findName,
+  findNextWordIdx,
+  handleInputChange,
+  useUpdateAutoComplete,
+} from './utils';
 
 const AutoComplete = ({
   width = 300,
@@ -27,7 +28,7 @@ const AutoComplete = ({
   const ulRef = useClickAway(() => {
     showDropdown && setShowDropdown(false);
   }, [showDropdown]);
-
+  const timeoutId = useRef(0);
   const dispatch = useDispatch();
   const { data: searchStore } = useSelector((store: RootState) => store.search);
 
@@ -35,33 +36,19 @@ const AutoComplete = ({
     const { value } = e.target;
     setAutoCompleteInput(value);
 
-    if (!value.length) {
-      setShowDropdown(false);
-      return setDropdownList([]);
+    if (timeoutId.current) {
+      clearTimeout(timeoutId.current);
     }
-
-    const storedData = searchStore.find(({ name }) => name === value);
-    if (storedData) {
-      const { wordList: storedWordList, minute } = storedData;
-      const nowMin = new Date().getMinutes();
-
-      if (Math.abs(nowMin - (minute as number)) <= 5) {
-        setWordList(storedWordList as TypeWordList);
-        createDropdownListAndSetDropDownOpen(
-          storedWordList as TypeWordList,
-          value,
-          setDropdownList,
-          setShowDropdown,
-        );
-        return;
-      }
-      dispatch(search.actions.remove(value));
-    }
-    const newWordList = await searchApi(value);
-
-    setWordList(newWordList);
-    createDropdownListAndSetDropDownOpen(newWordList, value, setDropdownList, setShowDropdown);
-    dispatch(search.actions.set(value, newWordList));
+    timeoutId.current = window.setTimeout(() => {
+      handleInputChange(
+        value,
+        setShowDropdown,
+        setDropdownList,
+        searchStore,
+        setWordList,
+        dispatch,
+      );
+    }, 500);
   };
 
   const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -108,7 +95,7 @@ const AutoComplete = ({
     setShowDropdown(true);
   };
   return (
-    <Wrapper width={width}>
+    <Wrapper width={width} {...props}>
       <InputWrapper>
         <Magnifier />
         <Input
